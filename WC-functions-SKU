@@ -1,0 +1,23 @@
+/* 
+* WooCommerceHacks
+* 
+* Extract from 2018 plugin by GitHub User @corsonr with input by GitHub User @fwet
+* Add the following code at the end of functions.php file of your site's theme.
+* Wordpess Admin Dashboard -> Appearance -> Theme Editor -> functions.php
+*/
+
+function get_product_id_by_product_sku( $add_to_cart ) {
+	
+		global $wpdb;
+			  
+		$postQry="SELECT p.ID FROM wp_posts p LEFT JOIN wp_postmeta m ON ( p.ID = m.post_id ) WHERE p.post_status = 'publish' AND m.meta_key='_sku' AND m.meta_value='%s' LIMIT 1";
+		$product_id = $wpdb->get_var( $wpdb->prepare( $postQry, $add_to_cart ) );	  
+		
+    if ( $product_id ) return $product_id;
+				
+		return $add_to_cart;
+	
+	}
+
+
+add_filter( 'woocommerce_add_to_cart_product_id', 'get_product_id_by_product_sku' );
